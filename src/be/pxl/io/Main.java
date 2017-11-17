@@ -60,18 +60,16 @@ public class Main {
 			bufferedWriter = new BufferedWriter(new FileWriter(outputPath.toString()));
 			bufferedWriter.write("Alphabetical Sort:" + System.lineSeparator());
 
-			String[] sortedWords = words.keySet().stream().toArray(String[]::new);
-			for (String s : sortedWords) {
+			for (String s : words.keySet().stream().toArray(String[]::new)) {
 				bufferedWriter.write(s + System.lineSeparator());
 			}
 
 			bufferedWriter.write(System.lineSeparator() + "Occurence Sort:" + System.lineSeparator());
 
-			String[] sortedOccurence = words.entrySet().stream()
+			for (String entry : words.entrySet().stream()
 					.sorted((e1, e2) -> e1.getValue().intValue() > e2.getValue().intValue() ? -1 : 1)
-					.map(e -> e.getKey()).toArray(String[]::new);
-			for (String s : sortedOccurence) {
-				bufferedWriter.write(s + System.lineSeparator());
+					.map(entry -> String.format("%-20s %s", entry.getKey(), entry.getValue())).toArray(String[]::new)) {
+				bufferedWriter.write(entry + System.lineSeparator());
 			}
 
 			bufferedWriter.close();
