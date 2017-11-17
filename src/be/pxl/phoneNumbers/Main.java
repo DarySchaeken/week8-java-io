@@ -9,36 +9,21 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.Scanner;
 
 public class Main {
+	private static String filePath;
+	private static Properties properties;
 
 	public static void main(String[] args) {
-		try (FileOutputStream outputStream = new FileOutputStream("Application.properties")) {
-			if(!Files.exists(Paths.get("C:\\USERS\\DARY\\OPDRACHTEN\\OPDRACHT1\\FASE1\\phonedirectory.txt")))
-			Files.createFile(Paths.get("C:\\USERS\\DARY\\OPDRACHTEN\\OPDRACHT1\\FASE1\\phonedirectory.txt"));
-			Properties properties = new Properties();
-			properties.setProperty("File", "C:\\USERS\\DARY\\OPDRACHTEN\\OPDRACHT1\\FASE1\\phonedirectory.txt");
-			properties.storeToXML(outputStream, "Application properties");
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		
-		String filePath = null;
-		
-		try (FileInputStream inputStream = new FileInputStream("Application.properties");) {
-			Properties properties = new Properties();
-			properties.loadFromXML(inputStream);
-			filePath = properties.getProperty("File");
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
+		loadProperties();
+		if (filePath == null) {
+			createProperties();
+			loadProperties();
 		}
 
 		try (BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
@@ -96,11 +81,51 @@ public class Main {
 				bufferedWriter.write(s);
 				bufferedWriter.newLine();
 			}
+			saveProperties();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static void createProperties() {
+		try {
+			Path phoneDirectory = Paths.get(System.getProperty("user.home")).resolve("\\OPDRACHTEN\\OPDRACHT1\\FASE1\\phonedirectory.txt");
+			if (!Files.exists(phoneDirectory)) {
+				Files.createFile(phoneDirectory);
+			}
+			
+			properties = new Properties();
+			properties.setProperty("File", phoneDirectory.toString());
+			saveProperties();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private static void loadProperties() {
+		try (FileInputStream inputStream = new FileInputStream("Application.properties");) {
+			properties = new Properties();
+			properties.loadFromXML(inputStream);
+			filePath = properties.getProperty("File");
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	private static void saveProperties() {
+		try (FileOutputStream outputStream = new FileOutputStream("Application.properties")) {
+			properties.storeToXML(outputStream, "Application properties");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 }

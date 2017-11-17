@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Comparator;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 public class Main {
@@ -59,27 +57,20 @@ public class Main {
 			Files.deleteIfExists(outputPath);
 			Files.createFile(outputPath);
 			bufferedWriter = new BufferedWriter(new FileWriter(outputPath.toString()));
+			bufferedWriter.write("Alphabetical Sort:" + System.lineSeparator());
+
 			String[] sortedWords = words.keySet().stream().toArray(String[]::new);
 			for (String s : sortedWords) {
-				bufferedWriter.write(s);
-				bufferedWriter.newLine();
+				bufferedWriter.write(s + System.lineSeparator());
 			}
-			words.values().stream().forEach(System.out::println);
-			bufferedWriter.newLine();
-			String[] sortedOccurence = words.entrySet().stream().sorted(new Comparator<Entry<String, Integer>>() {
 
-				@Override
-				public int compare(Entry<String, Integer> o1, Entry<String, Integer> o2) {
-					if (o1.getValue().intValue() > o2.getValue().intValue()) {
-						return -1;
-					} else {
-						return 1;
-					}
-				}
-			}).map(e -> e.getKey()).toArray(String[]::new);
+			bufferedWriter.write(System.lineSeparator() + "Occurence Sort:" + System.lineSeparator());
+
+			String[] sortedOccurence = words.entrySet().stream()
+					.sorted((e1, e2) -> e1.getValue().intValue() > e2.getValue().intValue() ? -1 : 1)
+					.map(e -> e.getKey()).toArray(String[]::new);
 			for (String s : sortedOccurence) {
-				bufferedWriter.write(s);
-				bufferedWriter.newLine();
+				bufferedWriter.write(s + System.lineSeparator());
 			}
 
 			bufferedWriter.close();
