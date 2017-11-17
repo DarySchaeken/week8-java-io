@@ -35,6 +35,7 @@ public class Main {
 			}
 			// Requested method prints
 			System.out.println("Requested method prints");
+			System.out.println(userHomePath.getClass());
 			System.out.println(phase2Path.toString());
 			System.out.println(phase2Path.getFileName());
 			System.out.println(phase2Path.getName(0));
